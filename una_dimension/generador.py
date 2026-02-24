@@ -24,13 +24,3 @@ class GeneradorCongruenciaLineal:
             lista_Ri.append(Ri)
 
         return lista_Ri
-
-    def generar_Ni(self, pasos: int, a: int, b: int):
-        lista_Ri = self.generar_Ri(pasos)
-        lista_Ni = []
-
-        for Ri in lista_Ri:
-            Ni = a + (b - a) * Ri
-            lista_Ni.append(Ni)
-
-        return lista_Ri

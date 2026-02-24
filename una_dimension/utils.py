@@ -32,7 +32,7 @@ class Utils:
         plt.xlabel("Posición Final")
         plt.ylabel("Frecuencia")
         plt.grid(True, alpha=0.2, axis="y")
-        plt.xticks(range(min_pos, max_pos + 1))  # Etiquetas en números enteros
+        plt.tight_layout()
         plt.show()
 
     @staticmethod
