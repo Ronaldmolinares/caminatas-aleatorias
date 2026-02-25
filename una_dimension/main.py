@@ -30,13 +30,11 @@ def caminata(semilla: int, pasos: int):
     # Crear un nuevo generador con esta semilla específica
     generador = GeneradorCongruenciaLineal(semilla)
 
-    # Generar los números aleatorios necesarios
-    secuencia_Ri = generador.generar_Ri(pasos)
-
     posicion_actual = 0
     historial_posiciones = [posicion_actual]
 
-    for numero_aleatorio in secuencia_Ri:
+    for _ in range(pasos):
+        numero_aleatorio = generador.siguiente_Ri()
         if numero_aleatorio < 0.5:
             posicion_actual -= 1  # Movimiento a la izquierda
         else:
@@ -65,6 +63,8 @@ def ejecutar_simulacion(
         índice de la simulación (0, 1, 2, ..., numero_simulaciones-1).
     pasos_por_simulacion : int
         Número de pasos a simular en cada caminata aleatoria.
+    paso_objetivo : int
+        Paso para calcular la probabilidad de estar en el origen (0) en ese paso.
 
     Returns
     -------
@@ -83,18 +83,20 @@ def ejecutar_simulacion(
     for i in range(numero_simulaciones):
         # Usar una semilla diferente en cada iteración para independencia
         semilla_actual = semilla_base + i
-        # semilla_actual = (semilla_base * 12345 + i * 67890) % (2**32)
 
-        # Cada llamada a caminata() crea su propio generador interno
         historial_posiciones = caminata(semilla_actual, pasos_por_simulacion)
 
         historiales_completos.append(historial_posiciones)
         posiciones_finales.append(historial_posiciones[-1])
 
+        print(
+            f"Ejecutando simulación {i + 1}/{numero_simulaciones} - Posición final: {historial_posiciones[-1]}"
+        )
+
     # Graficar la trayectoria de la última caminata simulada
-    # Utils.graficar_trayectorias(
-    #     list(range(len(historial_posiciones))), historial_posiciones
-    # )
+    Utils.graficar_trayectorias(
+        list(range(len(historial_posiciones))), historial_posiciones
+    )
 
     # Graficar el histograma de posiciones finales
     Utils.graficar_histograma(posiciones_finales)
@@ -142,13 +144,17 @@ def calcular_probabilidad(historiales, paso_especifico):
 
 if __name__ == "__main__":
     # Generar semilla única basada en el tiempo actual
-    semilla_inicial = int(time.time() * 1000000) % (2**32 - 1)
+    semilla_base = int(time.time() * 1000000) % (2**32 - 1)
 
-    # Ejecutar 100 simulaciones dando en cada una 1,000,000 de pasos y medir métricas de rendimiento
+    numero_de_simulaciones = 100
+    pasos_por_simulacion = 1000000
+    paso_objetivo_para_probabilidad = 4
+
+    # Ejecutar simulaciones
     Utils.metricas(
         ejecutar_simulacion,
-        100,  # numero de simulaciones
-        semilla_inicial,  # semilla base
-        1000000,  # pasos por simulacion
-        4,  # paso objetivo para calcular probabilidad de estar en el origen
+        numero_de_simulaciones,
+        semilla_base,
+        pasos_por_simulacion,
+        paso_objetivo_para_probabilidad,
     )

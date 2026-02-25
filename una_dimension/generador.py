@@ -43,66 +43,93 @@ class GeneradorCongruenciaLineal:
         self.c = 1013904223  # Incremento
         self.m = 2**32  # Módulo
 
-    def generar_Xi(self, pasos: int):
+    def siguiente_Ri(self):
         """
-        Generar una secuencia de números enteros pseudoaleatorios.
+        Genera el siguiente número pseudoaleatorio R_i en el rango [0, 1).
 
-        Aplica repetidamente la fórmula de congruencia lineal para generar
-        una secuencia de números enteros X_i en el rango [0, m).
-
-        Parameters
-        ----------
-        pasos : int
-            Cantidad de números pseudoaleatorios a generar.
+        Aplica la fórmula de congruencia lineal para actualizar el estado
+        interno (self.semilla) y devuelve el número normalizado R_i.
 
         Returns
         -------
-        list of int
-            Lista con los números enteros X_i generados.
+        float
+            El siguiente número pseudoaleatorio R_i en el rango [0, 1).
 
         Notes
         -----
-        Este método modifica el estado interno (self.semilla) con cada
-        número generado, por lo que llamadas sucesivas continuarán la
-        secuencia desde el último valor.
+        - Cada llamada a este método avanza la secuencia y modifica el estado
+          interno del generador.
+        - El valor devuelto es siempre >= 0 y < 1.
         """
-        secuencia_Xi = []
+        siguiente_Xi = (
+            self.a * self.semilla + self.c
+        ) % self.m  # Calcular el siguiente X_i usando la fórmula de congruencia lineal
+        self.semilla = siguiente_Xi
+        Ri_normalizado = (
+            siguiente_Xi / self.m
+        )  # Normalizar X_i para obtener R_i en el rango [0, 1)
+        return Ri_normalizado
 
-        for _ in range(pasos):
-            siguiente_Xi = (self.a * self.semilla + self.c) % self.m
-            self.semilla = siguiente_Xi
-            secuencia_Xi.append(siguiente_Xi)
+    # def generar_Xi(self, pasos: int):
+    #     """
+    #     Generar una secuencia de números enteros pseudoaleatorios.
 
-        return secuencia_Xi
+    #     Aplica repetidamente la fórmula de congruencia lineal para generar
+    #     una secuencia de números enteros X_i en el rango [0, m).
 
-    def generar_Ri(self, pasos: int):
-        """
-        Generar una secuencia de números pseudoaleatorios uniformes en [0, 1).
+    #     Parameters
+    #     ----------
+    #     pasos : int
+    #         Cantidad de números pseudoaleatorios a generar.
 
-        Genera números enteros X_i y los normaliza dividiéndolos por m para
-        obtener valores en el intervalo [0, 1).
+    #     Returns
+    #     -------
+    #     list of int
+    #         Lista con los números enteros X_i generados.
 
-        Parameters
-        ----------
-        pasos : int
-            Cantidad de números pseudoaleatorios a generar.
+    #     Notes
+    #     -----
+    #     Este método modifica el estado interno (self.semilla) con cada
+    #     número generado, por lo que llamadas sucesivas continuarán la
+    #     secuencia desde el último valor.
+    #     """
+    #     secuencia_Xi = []
 
-        Returns
-        -------
-        list of float
-            Lista con números pseudoaleatorios R_i en el rango [0, 1).
+    #     for _ in range(pasos):
+    #         siguiente_Xi = (self.a * self.semilla + self.c) % self.m
+    #         self.semilla = siguiente_Xi
+    #         secuencia_Xi.append(siguiente_Xi)
 
-        Notes
-        -----
-        - Cada R_i se calcula como: R_i = X_i / m
-        - Los valores están uniformemente distribuidos en [0, 1)
-        - Este método también modifica el estado interno del generador
-        """
-        secuencia_Ri = []
-        secuencia_Xi = self.generar_Xi(pasos)
+    #     return secuencia_Xi
 
-        for i in range(pasos):
-            Ri_normalizado = secuencia_Xi[i] / self.m
-            secuencia_Ri.append(Ri_normalizado)
+    # def generar_Ri(self, pasos: int):
+    #     """
+    #     Generar una secuencia de números pseudoaleatorios uniformes en [0, 1).
 
-        return secuencia_Ri
+    #     Genera números enteros X_i y los normaliza dividiéndolos por m para
+    #     obtener valores en el intervalo [0, 1).
+
+    #     Parameters
+    #     ----------
+    #     pasos : int
+    #         Cantidad de números pseudoaleatorios a generar.
+
+    #     Returns
+    #     -------
+    #     list of float
+    #         Lista con números pseudoaleatorios R_i en el rango [0, 1).
+
+    #     Notes
+    #     -----
+    #     - Cada R_i se calcula como: R_i = X_i / m
+    #     - Los valores están uniformemente distribuidos en [0, 1)
+    #     - Este método también modifica el estado interno del generador
+    #     """
+    #     secuencia_Ri = []
+    #     secuencia_Xi = self.generar_Xi(pasos)
+
+    #     for i in range(pasos):
+    #         Ri_normalizado = secuencia_Xi[i] / self.m
+    #         secuencia_Ri.append(Ri_normalizado)
+
+    #     return secuencia_Ri

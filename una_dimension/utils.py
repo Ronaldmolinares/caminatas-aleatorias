@@ -78,7 +78,7 @@ class Utils:
             edgecolor="black",
             rwidth=0.5,
         )
-        plt.title("Histograma de posiciones finales de la Rana Feliz")
+        plt.title("Histograma de posiciones finales de la Rana Feliz en 1D")
         plt.xlabel("Posición Final")
         plt.ylabel("Frecuencia")
         plt.grid(True, alpha=0.2, axis="y")
