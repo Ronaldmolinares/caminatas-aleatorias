@@ -10,7 +10,7 @@ class GeneradorCongruenciaLineal:
     --> a (int): Multiplicador (1664525, valor recomendado por Numerical Recipes).
     --> c (int): Incremento (1013904223).
     --> m (int): Módulo (2^32, rango máximo de valores).
-    --> Métod Formal: Ri = Xi / m
+    --> Método Formal: Ri = Xi / m
 
 
     Methods
