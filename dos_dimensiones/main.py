@@ -27,8 +27,7 @@ def caminata(semilla: int, pasos: int):
         trayectoria_x.append(x_actual)
         trayectoria_y.append(y_actual)
 
-    # return (trayectoria_x, trayectoria_y)
-    return list(zip(trayectoria_x, trayectoria_y))
+    return (trayectoria_x, trayectoria_y)
 
 
 def ejecutar_simulacion(
@@ -54,41 +53,40 @@ def ejecutar_simulacion(
     None
     """
     posiciones_finales = []
-    trayectorias = []  # Guardar trayectorias completas
+    posiciones_en_paso_objetivo = []  # Guardar paso especifico para calcular probabilidad
 
     for i in range(numero_simulaciones):
         # Usar una semilla diferente en cada iteración
         semilla_actual = semilla + i
 
-        trayectoria = caminata(semilla_actual, pasos_por_simulacion)
+        trayectoria_x, trayectoria_y = caminata(semilla_actual, pasos_por_simulacion)
 
-        trayectorias.append(trayectoria)
-
-        posiciones_finales.append(trayectoria[-1])
-
-        print(
-            f"Simulación {i + 1}/{numero_simulaciones} completada. Posición final: {trayectoria[-1]}"
+        posiciones_finales.append((trayectoria_x[-1], trayectoria_y[-1]))
+        posiciones_en_paso_objetivo.append(
+            (trayectoria_x[paso_objetivo], trayectoria_y[paso_objetivo])
         )
 
-    # Graficar la trayectoria de la última caminata simulada
-    x, y = zip(*trayectorias[-1])
-    Utils.graficar_trayectorias(x, y)
+        print(
+            f"Simulación {i + 1}/{numero_simulaciones} completada. Posición final: {trayectoria_x[-1], trayectoria_y[-1]}"
+        )
+
+        # Graficar la trayectoria de la última caminata simulada
+        if i == numero_simulaciones - 1:
+            Utils.graficar_trayectorias(trayectoria_x, trayectoria_y)
 
     Utils.graficar_histograma(posiciones_finales)
     Utils.graficar_heatmap(posiciones_finales)
 
-    show_p = calcular_probabilidad(trayectorias, paso_objetivo)
+    show_p = calcular_probabilidad(posiciones_en_paso_objetivo, paso_objetivo)
     print(show_p)
 
 
-def calcular_probabilidad(trayectorias, paso_objetivo):
+def calcular_probabilidad(posiciones, paso_objetivo):
     """Verifica si en el paso específico la rana estaba en el origen (0, 0)"""
 
-    contador = sum(
-        1 for t in trayectorias if len(t) > paso_objetivo and t[paso_objetivo] == (0, 0)
-    )
+    contador = sum(1 for coordenada in posiciones if coordenada == (0, 0))
 
-    probabilidad = contador / len(trayectorias)
+    probabilidad = contador / len(posiciones)
 
     return f"Probabilidad de estar en (0, 0) en el paso {paso_objetivo}: {probabilidad:.4f}"
 
