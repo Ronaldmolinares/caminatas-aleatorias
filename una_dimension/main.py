@@ -78,7 +78,7 @@ def ejecutar_simulacion(
     - Cada simulación realiza `pasos_por_simulacion` de pasos
     """
     posiciones_finales = []
-    historiales_completos = []
+    posiciones_en_paso_objetivo = []
 
     for i in range(numero_simulaciones):
         # Usar una semilla diferente en cada iteración para independencia
@@ -86,7 +86,7 @@ def ejecutar_simulacion(
 
         historial_posiciones = caminata(semilla_actual, pasos_por_simulacion)
 
-        historiales_completos.append(historial_posiciones)
+        posiciones_en_paso_objetivo.append(historial_posiciones[paso_objetivo])
         posiciones_finales.append(historial_posiciones[-1])
 
         print(
@@ -102,22 +102,20 @@ def ejecutar_simulacion(
     Utils.graficar_histograma(posiciones_finales)
 
     # Calcular y mostrar la probabilidad de estar en el origen en el paso 𝓷
-    probabilidad_origen = calcular_probabilidad(historiales_completos, paso_objetivo)
+    probabilidad_origen = calcular_probabilidad(
+        posiciones_en_paso_objetivo, paso_objetivo
+    )
     print(probabilidad_origen)
 
 
-def calcular_probabilidad(historiales, paso_especifico):
+def calcular_probabilidad(posiciones, paso_especifico):
     """
     Calcula la probabilidad de estar en el origen en un paso específico.
 
-    Analiza múltiples historiales de caminatas aleatorias y determina qué
-    proporción de ellas se encontraban en la posición 0 (origen) en un paso dado.
-
     Parameters
     ----------
-    historiales : list of list of int
-        Lista de historiales de posiciones. Cada historial es una lista de
-        posiciones en cada paso de una caminata aleatoria.
+    posiciones : list of int
+        Lista de posiciones finales en un paso específico de múltiples caminatas aleatorias.
     paso_especifico : int
         Índice del paso a analizar (0 = posición inicial, 1 = primer paso, etc.).
 
@@ -131,13 +129,9 @@ def calcular_probabilidad(historiales, paso_especifico):
     Si el paso_especifico excede la longitud de algún historial, ese historial
     será ignorado al acceder al índice.
     """
-    conteo_en_origen = 0
+    conteo_en_origen = sum(1 for punto in posiciones if punto == 0)
 
-    for historial in historiales:
-        if historial[paso_especifico] == 0:
-            conteo_en_origen += 1
-
-    probabilidad = conteo_en_origen / len(historiales)
+    probabilidad = conteo_en_origen / len(posiciones)
 
     return f"Probabilidad de que en el paso {paso_especifico} la rana este en el origen: {probabilidad}"
 
