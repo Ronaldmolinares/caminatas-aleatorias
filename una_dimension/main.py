@@ -46,7 +46,7 @@ def caminata(semilla: int, pasos: int):
     return historial_posiciones
 
 
-def ejecutar_simulacion(numero_simulaciones, semilla_base):
+def ejecutar_simulacion(numero_simulaciones, semilla_base, pasos_por_simulacion):
     """
     Ejecuta múltiples caminatas aleatorias independientes y analiza los resultados.
 
@@ -81,7 +81,7 @@ def ejecutar_simulacion(numero_simulaciones, semilla_base):
         semilla_actual = semilla_base + i
 
         # Cada llamada a caminata() crea su propio generador interno
-        historial_posiciones = caminata(semilla_actual, 1000000)
+        historial_posiciones = caminata(semilla_actual, pasos_por_simulacion)
 
         historiales_completos.append(historial_posiciones)
         posiciones_finales.append(historial_posiciones[-1])
@@ -134,5 +134,5 @@ if __name__ == "__main__":
     # Generar semilla única basada en el tiempo actual
     semilla_inicial = int(time.time() * 1000000) % (2**32 - 1)
 
-    # Ejecutar 100 simulaciones y medir métricas de rendimiento
-    Utils.metricas(ejecutar_simulacion, 100, semilla_inicial)
+    # Ejecutar 100 simulaciones dando en cada una 1,000,000 de pasos y medir métricas de rendimiento
+    Utils.metricas(ejecutar_simulacion, 100, semilla_inicial, 1000000)
