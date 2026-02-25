@@ -67,13 +67,16 @@ class Utils:
 
         """
 
-        plt.figure(figsize=(7, 7))
-        min_pos = int(min(posiciones_finales))
-        max_pos = int(max(posiciones_finales))
-        bins = np.arange(min_pos - 0.5, max_pos + 1.5, 1)
+        plt.figure(figsize=(8, 6))
+        bins = int(np.sqrt(len(posiciones_finales)))
 
         plt.hist(
-            posiciones_finales, bins=bins, color="blue", alpha=0.7, edgecolor="black"
+            posiciones_finales,
+            bins=bins,
+            color="blue",
+            alpha=0.7,
+            edgecolor="black",
+            rwidth=0.5,
         )
         plt.title("Histograma de posiciones finales de la Rana Feliz")
         plt.xlabel("Posición Final")
@@ -106,7 +109,9 @@ class Utils:
         current, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
 
-        print(f"Tiempo de ejecución: {end_time - start_time:.4f} segundos")
+        print(
+            f"Tiempo de ejecución: {end_time - start_time:.4f} segundos. Equivalente en minutos: {(end_time - start_time) / 60:.2f} minutos"
+        )
         print(
             f"Memoria utilizada: {current / 10**6:.4f} MB; Pico de memoria: {peak / 10**6:.4f} MB"
         )

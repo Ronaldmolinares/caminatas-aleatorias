@@ -46,7 +46,9 @@ def caminata(semilla: int, pasos: int):
     return historial_posiciones
 
 
-def ejecutar_simulacion(numero_simulaciones, semilla_base, pasos_por_simulacion):
+def ejecutar_simulacion(
+    numero_simulaciones, semilla_base, pasos_por_simulacion, paso_objetivo
+):
     """
     Ejecuta múltiples caminatas aleatorias independientes y analiza los resultados.
 
@@ -61,6 +63,8 @@ def ejecutar_simulacion(numero_simulaciones, semilla_base, pasos_por_simulacion)
     semilla_base : int
         Semilla inicial. Cada simulación usará semilla_base + i donde i es el
         índice de la simulación (0, 1, 2, ..., numero_simulaciones-1).
+    pasos_por_simulacion : int
+        Número de pasos a simular en cada caminata aleatoria.
 
     Returns
     -------
@@ -71,7 +75,7 @@ def ejecutar_simulacion(numero_simulaciones, semilla_base, pasos_por_simulacion)
     -----
     - Genera un histograma de las posiciones finales de todas las simulaciones
     - Calcula la probabilidad de retornar al origen en el paso específico (por ejemplo, paso 4).
-    - Cada simulación realiza 1,000,000 de pasos
+    - Cada simulación realiza `pasos_por_simulacion` de pasos
     """
     posiciones_finales = []
     historiales_completos = []
@@ -79,6 +83,7 @@ def ejecutar_simulacion(numero_simulaciones, semilla_base, pasos_por_simulacion)
     for i in range(numero_simulaciones):
         # Usar una semilla diferente en cada iteración para independencia
         semilla_actual = semilla_base + i
+        # semilla_actual = (semilla_base * 12345 + i * 67890) % (2**32)
 
         # Cada llamada a caminata() crea su propio generador interno
         historial_posiciones = caminata(semilla_actual, pasos_por_simulacion)
@@ -86,11 +91,16 @@ def ejecutar_simulacion(numero_simulaciones, semilla_base, pasos_por_simulacion)
         historiales_completos.append(historial_posiciones)
         posiciones_finales.append(historial_posiciones[-1])
 
+    # Graficar la trayectoria de la última caminata simulada
+    # Utils.graficar_trayectorias(
+    #     list(range(len(historial_posiciones))), historial_posiciones
+    # )
+
     # Graficar el histograma de posiciones finales
     Utils.graficar_histograma(posiciones_finales)
 
     # Calcular y mostrar la probabilidad de estar en el origen en el paso 𝓷
-    probabilidad_origen = calcular_probabilidad(historiales_completos, 4)
+    probabilidad_origen = calcular_probabilidad(historiales_completos, paso_objetivo)
     print(probabilidad_origen)
 
 
@@ -135,4 +145,10 @@ if __name__ == "__main__":
     semilla_inicial = int(time.time() * 1000000) % (2**32 - 1)
 
     # Ejecutar 100 simulaciones dando en cada una 1,000,000 de pasos y medir métricas de rendimiento
-    Utils.metricas(ejecutar_simulacion, 100, semilla_inicial, 1000000)
+    Utils.metricas(
+        ejecutar_simulacion,
+        100,  # numero de simulaciones
+        semilla_inicial,  # semilla base
+        1000000,  # pasos por simulacion
+        4,  # paso objetivo para calcular probabilidad de estar en el origen
+    )
