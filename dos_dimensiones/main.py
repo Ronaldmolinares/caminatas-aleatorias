@@ -53,6 +53,8 @@ def ejecutar_simulacion(
     -------
     None
     """
+    print("Iniciando simulaciones de caminata aleatoria en 2D...")
+
     posiciones_finales = []
     posiciones_en_paso_objetivo = []  # Guardar paso especifico para calcular probabilidad
 

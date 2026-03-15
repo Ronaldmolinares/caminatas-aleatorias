@@ -80,7 +80,7 @@ def ejecutar_simulacion(
     posiciones_finales = []
     posiciones_en_paso_objetivo = []
 
-    print("Iniciando simulaciones...")
+    print("Iniciando simulaciones de caminata aleatoria en 1D...")
 
     for i in range(numero_simulaciones):
         # Usar una semilla diferente en cada iteración para independencia
