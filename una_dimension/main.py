@@ -101,10 +101,6 @@ def ejecutar_simulacion(
                 list(range(len(historial_posiciones))), historial_posiciones
             )
 
-        # print(
-        #     f"Ejecutando simulación {i + 1}/{numero_simulaciones} - Posición final: {historial_posiciones[-1]}"
-        # )
-
     # Graficar el histograma de posiciones finales
     Utils.graficar_histograma(posiciones_finales)
 
