@@ -41,6 +41,7 @@ def caminata(semilla: int, pasos: int):
 def ejecutar_simulacion(
     numero_simulaciones, semilla, pasos_por_simulacion, paso_objetivo
 ):
+    print("Iniciando simulaciones de caminata aleatoria en 3D...")
     posiciones_finales = []
     posiciones_en_paso_objetivo = []  # Guardar paso especifico para calcular probabilidad
 

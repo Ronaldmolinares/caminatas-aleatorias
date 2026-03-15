@@ -117,27 +117,126 @@ class Utils:
 
         # Proyección XY
         axs[0].scatter(trayectoria_x, trayectoria_y, alpha=0.5)
+        axs[0].scatter(
+            trayectoria_x[0],
+            trayectoria_y[0],
+            color="black",
+            s=100,
+            marker="o",
+            label="Inicio",
+            zorder=5,
+        )
+        axs[0].scatter(
+            trayectoria_x[-1],
+            trayectoria_y[-1],
+            color="red",
+            s=100,
+            marker="*",
+            label="Final",
+            zorder=5,
+        )
+        axs[0].text(
+            trayectoria_x[0],
+            trayectoria_y[0],
+            f"  ({trayectoria_x[0]}, {trayectoria_y[0]})",
+            color="black",
+            fontsize=9,
+        )
+        axs[0].text(
+            trayectoria_x[-1],
+            trayectoria_y[-1],
+            f"  ({trayectoria_x[-1]}, {trayectoria_y[-1]})",
+            color="red",
+            fontsize=9,
+        )
         axs[0].set_title("Proyección XY")
         axs[0].set_xlabel("Posición X")
         axs[0].set_ylabel("Posición Y")
         axs[0].axhline(y=0, color="black", linewidth=0.8)
         axs[0].axvline(x=0, color="black", linewidth=0.8)
+        axs[0].legend(loc="upper right")
 
         # Proyección XZ
         axs[1].scatter(trayectoria_x, trayectoria_z, alpha=0.5)
+        axs[1].scatter(
+            trayectoria_x[0],
+            trayectoria_z[0],
+            color="black",
+            s=100,
+            marker="o",
+            label="Inicio",
+            zorder=5,
+        )
+        axs[1].scatter(
+            trayectoria_x[-1],
+            trayectoria_z[-1],
+            color="red",
+            s=100,
+            marker="*",
+            label="Final",
+            zorder=5,
+        )
+        axs[1].text(
+            trayectoria_x[0],
+            trayectoria_z[0],
+            f"  ({trayectoria_x[0]}, {trayectoria_z[0]})",
+            color="black",
+            fontsize=9,
+        )
+        axs[1].text(
+            trayectoria_x[-1],
+            trayectoria_z[-1],
+            f"  ({trayectoria_x[-1]}, {trayectoria_z[-1]})",
+            color="red",
+            fontsize=9,
+        )
         axs[1].set_title("Proyección XZ")
         axs[1].set_xlabel("Posición X")
         axs[1].set_ylabel("Posición Z")
         axs[1].axhline(y=0, color="black", linewidth=0.8)
         axs[1].axvline(x=0, color="black", linewidth=0.8)
+        axs[1].legend(loc="upper right")
 
         # Proyección YZ
         axs[2].scatter(trayectoria_y, trayectoria_z, alpha=0.5)
+        axs[2].scatter(
+            trayectoria_y[0],
+            trayectoria_z[0],
+            color="black",
+            s=100,
+            marker="o",
+            label="Inicio",
+            zorder=5,
+        )
+        axs[2].scatter(
+            trayectoria_y[-1],
+            trayectoria_z[-1],
+            color="red",
+            s=100,
+            marker="*",
+            label="Final",
+            zorder=5,
+        )
+        axs[2].text(
+            trayectoria_y[0],
+            trayectoria_z[0],
+            f"  ({trayectoria_y[0]}, {trayectoria_z[0]})",
+            color="black",
+            fontsize=9,
+        )
+        axs[2].text(
+            trayectoria_y[-1],
+            trayectoria_z[-1],
+            f"  ({trayectoria_y[-1]}, {trayectoria_z[-1]})",
+            color="red",
+            fontsize=9,
+        )
         axs[2].set_title("Proyección YZ")
         axs[2].set_xlabel("Posición Y")
         axs[2].set_ylabel("Posición Z")
         axs[2].axhline(y=0, color="black", linewidth=0.8)
         axs[2].axvline(x=0, color="black", linewidth=0.8)
+        axs[2].legend(loc="upper right")
 
         plt.tight_layout()
         plt.show()
