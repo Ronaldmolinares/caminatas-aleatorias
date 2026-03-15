@@ -43,7 +43,7 @@ class GeneradorCongruenciaLineal:
         self.c = 1013904223  # Incremento
         self.m = 2**32  # Módulo
 
-    def siguiente_Ri(self):
+    def siguiente_Ri(self, pasos: int):
         """
         Genera el siguiente número pseudoaleatorio R_i en el rango [0, 1).
 
@@ -61,11 +61,12 @@ class GeneradorCongruenciaLineal:
           interno del generador.
         - El valor devuelto es siempre >= 0 y < 1.
         """
-        siguiente_Xi = (
-            self.a * self.semilla + self.c
-        ) % self.m  # Calcular el siguiente X_i usando la fórmula de congruencia lineal
-        self.semilla = siguiente_Xi
-        Ri_normalizado = (
-            siguiente_Xi / self.m
-        )  # Normalizar X_i para obtener R_i en el rango [0, 1)
-        return Ri_normalizado
+        secuencia_Ri = []
+        for _ in range(pasos):
+            # Calcular el siguiente X_i usando la fórmula de congruencia lineal
+            siguiente_Xi = (self.a * self.semilla + self.c) % self.m
+            self.semilla = siguiente_Xi
+            # Normalizar X_i para obtener R_i en el rango [0, 1)
+            Ri_normalizado = siguiente_Xi / self.m
+            secuencia_Ri.append(Ri_normalizado)
+        return secuencia_Ri

@@ -13,8 +13,9 @@ def caminata(semilla: int, pasos: int):
     trayectoria_x = [x_actual]
     trayectoria_y = [y_actual]
 
-    for _ in range(pasos):
-        siguiente_Ri = generador.siguiente_Ri()
+    numeros_aleatorios = generador.siguiente_Ri(pasos)
+
+    for siguiente_Ri in numeros_aleatorios:
         if siguiente_Ri <= 0.25:
             x_actual -= 1  # izquierda
         elif siguiente_Ri <= 0.5:
@@ -96,7 +97,7 @@ if __name__ == "__main__":
     semilla_base = int(time.time() * 1000000) % (2**32 - 1)
 
     numero_de_simulaciones = 100
-    pasos_por_simulacion = 10000
+    pasos_por_simulacion = 1000000
     paso_objetivo_para_probabilidad = 4
 
     # Ejecutar simulaciones
