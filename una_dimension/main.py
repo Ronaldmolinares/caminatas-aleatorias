@@ -33,8 +33,8 @@ def caminata(semilla: int, pasos: int):
     posicion_actual = 0
     historial_posiciones = [posicion_actual]
 
-    for _ in range(pasos):
-        numero_aleatorio = generador.siguiente_Ri()
+    numeros_aleatorios = generador.siguiente_Ri(pasos)
+    for numero_aleatorio in numeros_aleatorios:
         if numero_aleatorio < 0.5:
             posicion_actual -= 1  # Movimiento a la izquierda
         else:
@@ -80,23 +80,30 @@ def ejecutar_simulacion(
     posiciones_finales = []
     posiciones_en_paso_objetivo = []
 
+    print("Iniciando simulaciones...")
+
     for i in range(numero_simulaciones):
         # Usar una semilla diferente en cada iteración para independencia
         semilla_actual = semilla_base + i
 
         historial_posiciones = caminata(semilla_actual, pasos_por_simulacion)
 
-        posiciones_en_paso_objetivo.append(historial_posiciones[paso_objetivo])
         posiciones_finales.append(historial_posiciones[-1])
 
-        print(
-            f"Ejecutando simulación {i + 1}/{numero_simulaciones} - Posición final: {historial_posiciones[-1]}"
-        )
+        posiciones_en_paso_objetivo.append(historial_posiciones[paso_objetivo])
 
-    # Graficar la trayectoria de la última caminata simulada
-    Utils.graficar_trayectorias(
-        list(range(len(historial_posiciones))), historial_posiciones
-    )
+        if (i + 1) % 10 == 0 or i == numero_simulaciones - 1:
+            print(f"Ejecutando simulación {i + 1}/{numero_simulaciones}")
+
+        if i == numero_de_simulaciones - 1:
+            # Graficar la trayectoria de la última caminata simulada
+            Utils.graficar_trayectorias(
+                list(range(len(historial_posiciones))), historial_posiciones
+            )
+
+        # print(
+        #     f"Ejecutando simulación {i + 1}/{numero_simulaciones} - Posición final: {historial_posiciones[-1]}"
+        # )
 
     # Graficar el histograma de posiciones finales
     Utils.graficar_histograma(posiciones_finales)
