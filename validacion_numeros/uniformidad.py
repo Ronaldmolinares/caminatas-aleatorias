@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.stats import chi2, kstest  # type: ignore
+from scipy.stats import chi2  # type: ignore
 
 
 class PruebaUniformidad:
@@ -42,19 +42,6 @@ class PruebaUniformidad:
             print(f"  Chi-cuadrado teórico: {chi_cuadrado_teorico:.8f}")
             return False
 
-    def prueba_kolmogorov_smirnov(self, numeros_aleatorios):
-
-        # Realizar la prueba de Kolmogorov-Smirnov contra la distribución uniforme
-        resultado = kstest(numeros_aleatorios, "uniform")
-
-        alpha = 0.05
-        if resultado.pvalue > alpha:
-            print("Prueba de Kolmogorov-Smirnov: Aceptada")
-            print(f"  Estadístico KS: {resultado.statistic:.8f}")
-            print(f"  Valor p: {resultado.pvalue:.8f}")
-            return True
-        else:
-            print("Prueba de Kolmogorov-Smirnov: Rechazada")
-            print(f"  Estadístico KS: {resultado.statistic:.8f}")
-            print(f"  Valor p: {resultado.pvalue:.8f}")
-            return False
+    def prueba_kolmogorov_smirnov(self, numeros_aleatorios, alpha=0.05):
+        n = len(numeros_aleatorios)
+        mediana = sum(numeros_aleatorios) / n
