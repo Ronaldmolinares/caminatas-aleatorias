@@ -1,7 +1,15 @@
+import sys
 import time
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from generador import GeneradorCongruenciaLineal
 from utils import Utils
+
+from validacion_numeros.aleatoriedad import RandomnessTest
+from validacion_numeros.no_correlacion_serial import PruebaNoCorrelacionSerial
+from validacion_numeros.uniformidad import PruebaUniformidad
 
 
 def caminata(semilla: int, pasos: int):
@@ -95,7 +103,7 @@ def ejecutar_simulacion(
         if (i + 1) % 10 == 0 or i == numero_simulaciones - 1:
             print(f"Ejecutando simulación {i + 1}/{numero_simulaciones}")
 
-        if i == numero_de_simulaciones - 1:
+        if i == numero_simulaciones - 1:
             # Graficar la trayectoria de la última caminata simulada
             Utils.graficar_trayectorias(
                 list(range(len(historial_posiciones))), historial_posiciones
@@ -140,18 +148,93 @@ def calcular_probabilidad(posiciones, paso_especifico):
 
 
 if __name__ == "__main__":
-    # Generar semilla única basada en el tiempo actual
-    semilla_base = int(time.time() * 1000000) % (2**32 - 1)
-
     numero_de_simulaciones = 100
     pasos_por_simulacion = 1000000
     paso_objetivo_para_probabilidad = 4
 
-    # Ejecutar simulaciones
-    Utils.metricas(
-        ejecutar_simulacion,
-        numero_de_simulaciones,
-        semilla_base,
-        pasos_por_simulacion,
-        paso_objetivo_para_probabilidad,
-    )
+    validacion_exitosa = False
+
+    while not validacion_exitosa:
+        # Generar semilla
+        semilla_base = int(time.time() * 1000000) % (2**32 - 1)
+
+        print("=" * 50)
+        print("Pruebas sobre números Pseudoaleatorios")
+        print("=" * 50)
+
+        # Crear generador de prueba
+        gen_prueba = GeneradorCongruenciaLineal(semilla_base)
+        numeros_prueba = gen_prueba.siguiente_Ri(50000)
+
+        # Validar propiedades
+        aleatoriedad = RandomnessTest()
+        uniformidad = PruebaUniformidad()
+        no_correlacion_serial = PruebaNoCorrelacionSerial()
+
+        print("\n:::::: Prueba de Medias ::::::")
+        valida_medias = aleatoriedad.prueba_medias(numeros_prueba)
+
+        print("\n:::::: Prueba de Varianza ::::::")
+        valida_varianza = aleatoriedad.prueba_varianza(numeros_prueba)
+
+        print("\n:::::: Prueba de chi-cuadrado ::::::")
+        valida_uniformidad = uniformidad.prueba_chi_cuadrado(numeros_prueba)
+
+        print("\n:::::: Prueba de Kolmogorov-Smirnov ::::::")
+        valida_uniformidad_ks = uniformidad.prueba_kolmogorov_smirnov(numeros_prueba)
+
+        print("\n:::::: Prueba de Poker ::::::")
+        valida_poker = no_correlacion_serial.prueba_poker(numeros_prueba)
+
+        print("\n:::::: Prueba de Rachas ::::::")
+        valida_rachas = no_correlacion_serial.prueba_rachas(numeros_prueba)
+
+        print("\n" + "=" * 50)
+        if (
+            valida_medias
+            and valida_varianza
+            and valida_uniformidad
+            and valida_uniformidad_ks
+            and valida_poker
+            and valida_rachas
+        ):
+            print("Números pseudoaleatorios válidos.")
+            print("=" * 50 + "\n")
+            validacion_exitosa = True
+
+            # Ejecutar simulaciones
+            Utils.metricas(
+                ejecutar_simulacion,
+                numero_de_simulaciones,
+                semilla_base,
+                pasos_por_simulacion,
+                paso_objetivo_para_probabilidad,
+            )
+        else:
+            print("Números pseudoaleatorios NO válidos.")
+            if not valida_medias:
+                print("  - La prueba de medias FALLÓ")
+            if not valida_varianza:
+                print("  - La prueba de varianza FALLÓ")
+            if not valida_uniformidad:
+                print("  - La prueba de uniformidad FALLÓ")
+            if not valida_uniformidad_ks:
+                print("  - La prueba de Kolmogorov-Smirnov FALLÓ")
+            if not valida_poker:
+                print("  - La prueba de Poker FALLÓ")
+            if not valida_rachas:
+                print("  - La prueba de Rachas FALLÓ")
+            print("=" * 50)
+
+            # Preguntar al usuario
+            print("\nOpciones:")
+            print("1. Reintentar con otra semilla")
+            print("2. Salir")
+
+            opcion = input("\nElige una opción (1-2): ")
+            if opcion == "1":
+                print("Reintentando con una nueva semilla...\n")
+
+            else:
+                print("Simulación cancelada.")
+                break
