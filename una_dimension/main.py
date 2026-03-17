@@ -3,10 +3,9 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from generador import GeneradorCongruenciaLineal
 from utils import Utils
 
+from generador_numeros.congruencia_lineal import GeneradorCongruenciaLineal
 from validacion_numeros.aleatoriedad import RandomnessTest
 from validacion_numeros.no_correlacion_serial import PruebaNoCorrelacionSerial
 from validacion_numeros.uniformidad import PruebaUniformidad
@@ -41,7 +40,7 @@ def caminata(semilla: int, pasos: int):
     posicion_actual = 0
     historial_posiciones = [posicion_actual]
 
-    numeros_aleatorios = generador.siguiente_Ri(pasos)
+    numeros_aleatorios = generador.siguiente_Ri_Congruencia_Lineal(pasos)
     for numero_aleatorio in numeros_aleatorios:
         if numero_aleatorio < 0.5:
             posicion_actual -= 1  # Movimiento a la izquierda
@@ -164,7 +163,7 @@ if __name__ == "__main__":
 
         # Crear generador de prueba
         gen_prueba = GeneradorCongruenciaLineal(semilla_base)
-        numeros_prueba = gen_prueba.siguiente_Ri(50000)
+        numeros_prueba = gen_prueba.siguiente_Ri_Congruencia_Lineal(50000)
 
         # Validar propiedades
         aleatoriedad = RandomnessTest()
