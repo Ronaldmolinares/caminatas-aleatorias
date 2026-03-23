@@ -47,7 +47,7 @@ class Utils:
             trayectoria_x[0],
             trayectoria_y[0],
             trayectoria_z[0],
-            color="green",
+            color="black",
             s=100,
             marker="o",
             label=f"  Inicio: ({trayectoria_x[0]}, {trayectoria_y[0]}, {trayectoria_z[0]})",
@@ -60,7 +60,7 @@ class Utils:
             trayectoria_y[0],
             trayectoria_z[0],
             f"  Inicio: ({trayectoria_x[0]}, {trayectoria_y[0]}, {trayectoria_z[0]})",
-            color="green",
+            color="black",
             fontsize=10,
         )
 
@@ -93,21 +93,87 @@ class Utils:
         ax.legend()
         plt.show()
 
+    # @staticmethod
+    # def graficar_scatter_3D(posiciones_finales):
+    #     import matplotlib.pyplot as plt
+
+    #     x = [p[0] for p in posiciones_finales]
+    #     y = [p[1] for p in posiciones_finales]
+    #     z = [p[2] for p in posiciones_finales]
+
+    #     fig = plt.figure(figsize=(10, 10))
+    #     ax = fig.add_subplot(111, projection="3d")
+    #     ax.scatter(x, y, z, alpha=0.5)
+    #     ax.set_title("Posiciones Finales de las Simulaciones en el Espacio 3D")
+    #     ax.set_xlabel("Posición X")
+    #     ax.set_ylabel("Posición Y")
+    #     ax.set_zlabel("Posición Z")
+    #     plt.show()
     @staticmethod
-    def graficar_scatter_3D(posiciones_finales):
-        import matplotlib.pyplot as plt
+    def graficar_scatter_3D(posiciones_finales, n_pasos):
+        import numpy as np
 
-        x = [p[0] for p in posiciones_finales]
-        y = [p[1] for p in posiciones_finales]
-        z = [p[2] for p in posiciones_finales]
+        # 1. Procesar datos con NumPy para mayor eficiencia y cálculo de distancias
+        # Convertimos la lista de tuplas a una matriz NumPy de forma (N, 3)
+        pos = np.array(posiciones_finales)
 
-        fig = plt.figure(figsize=(10, 10))
+        x = pos[:, 0]
+        y = pos[:, 1]
+        z = pos[:, 2]
+
+        # Calculamos la distancia euclidiana de cada punto al origen (0,0,0)
+        # Esta es la métrica clave para entender la dispersión en 3D
+        distancias = np.sqrt(x**2 + y**2 + z**2)
+
+        # 2. Configuración del gráfico
+        fig = plt.figure(figsize=(12, 10))  # Un poco más ancho para la barra de color
         ax = fig.add_subplot(111, projection="3d")
-        ax.scatter(x, y, z, alpha=0.5)
-        ax.set_title("Posiciones Finales de las Simulaciones en el Espacio 3D")
-        ax.set_xlabel("Posición X")
-        ax.set_ylabel("Posición Y")
-        ax.set_zlabel("Posición Z")
+
+        # 3. CREAR EL SCATTER CON GRADIENTE DE COLOR (Crucial)
+        # 'c=distancias' asigna un color a cada punto basado en su lejanía
+        # 'cmap' define la paleta. 'viridis' es excelente para percibir profundidades.
+        scatter = ax.scatter(
+            x, y, z, c=distancias, cmap="viridis", s=30, alpha=0.6, edgecolors="none"
+        )
+
+        # Añadir barra de color (colorbar) para referencia numérica de la distancia
+        cbar = fig.colorbar(scatter, ax=ax, shrink=0.6, pad=0.1)
+        cbar.set_label("Distancia Euclídeana al Origen", fontsize=12)
+
+        # 4. MARCAR EL ORIGEN (Fundamental para el análisis)
+        # Dibujamos un punto rojo grande y brillante en (0,0,0)
+        ax.scatter(
+            0, 0, 0, color="red", s=200, marker="*", label="Origen (0,0,0)", zorder=10
+        )
+
+        # 5. AJUSTAR PROPORCIONES (Para evitar la elipse)
+        # Forzamos a que las unidades en los tres ejes midan lo mismo en pantalla
+        ax.set_box_aspect([1, 1, 1])  # Aspecto de cubo perfecto
+
+        # Definimos límites simétricos basados en sqrt(n) para dar contexto
+        # sqrt(n_pasos) nos da una idea de la dispersión típica
+        limite = np.sqrt(n_pasos) * 1.5  # Un margen para los outliers
+        ax.set_xlim(-limite, limite)
+        ax.set_ylim(-limite, limite)
+        ax.set_zlim(-limite, limite)
+
+        # 6. Estética y Leyendas
+        fig.suptitle(
+            f"Distribución Final en Espacio 3D tras {n_pasos:,} pasos",
+            fontsize=14,
+            y=0.98,
+        )
+        ax.set_xlabel("Posición X", fontsize=11)
+        ax.set_ylabel("Posición Y", fontsize=11)
+        ax.set_zlabel("Posición Z", fontsize=11)
+
+        # Colocar la leyenda del origen de forma visible
+        ax.legend(loc="upper right", frameon=True, fontsize=10)
+
+        # Mejorar la visibilidad de la cuadrícula
+        ax.grid(True, linestyle="--", alpha=0.5)
+
+        plt.tight_layout()
         plt.show()
 
     @staticmethod

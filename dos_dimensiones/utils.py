@@ -100,73 +100,122 @@ class Utils:
         plt.axvline(x=0, color="black", linewidth=0.8, linestyle="--", alpha=0.5)
 
         plt.title("Trayectoria de la Caminata Aleatoria en 2D", fontsize=14)
-        plt.xlabel("Iteración", fontsize=12)
-        plt.ylabel("Posición", fontsize=12)
+        plt.xlabel("Posición X", fontsize=12)
+        plt.ylabel("Posición Y", fontsize=12)
         plt.grid(True, alpha=0.3)
         plt.legend(loc="best")
         plt.tight_layout()
         plt.show(block=False)
 
-    def graficar_histograma(posiciones_finales):
+    @staticmethod
+    def graficar_scatter_plot(posiciones_finales, n_pasos):
         from collections import Counter
 
-        """
-        Graficar la distribución espacial de posiciones finales en 2D.
-        """
-        # 1. Contar cuántas veces aparece cada coordenada
-        frecuencias = Counter(posiciones_finales)
+        import matplotlib.pyplot as plt
+        import numpy as np
 
-        # 2. Separar las coordenadas X, Y y obtener las frecuencias para el tamaño
+        # 1. Procesar datos
+        frecuencias = Counter(posiciones_finales)
         coords = list(frecuencias.keys())
-        x = [c[0] for c in coords]
-        y = [c[1] for c in coords]
-        # Multiplicamos la frecuencia por un factor (ej. 50) para que el punto sea visible
+        x = np.array([c[0] for c in coords])
+        y = np.array([c[1] for c in coords])
+
+        # Calculamos la distancia al origen para el mapa de colores
+        distancias = np.sqrt(x**2 + y**2)
         tamaños = [f * 50 for f in frecuencias.values()]
 
         plt.figure(figsize=(10, 10))
 
-        # 3. Crear el gráfico de dispersión
-        # c puede ser un color fijo o basado en la frecuencia para un mapa de calor
-        plt.scatter(x, y, s=tamaños, alpha=0.6, edgecolors="blue", c="skyblue")
+        # 2. Crear el gráfico con gradiente (cmap) según la distancia
+        # 'viridis' o 'plasma' para resaltar la dispersión
+        scatter = plt.scatter(
+            x, y, s=tamaños, alpha=0.7, c=distancias, cmap="viridis", edgecolors="none"
+        )
 
-        # Líneas de origen
-        plt.axhline(y=0, color="black", linewidth=0.8)
-        plt.axvline(x=0, color="black", linewidth=0.8)
+        # Añadir barra de color para entender las distancias
+        cbar = plt.colorbar(scatter)
+        cbar.set_label("Distancia Euclídeana al Origen")
 
-        plt.title("Distribución de Posiciones Finales")
+        # 3. Dibujar el círculo de la "Distancia Típica" (Raíz de N)
+        distancia_esperada = np.sqrt(n_pasos)
+        circulo = plt.Circle(
+            (0, 0),
+            distancia_esperada,
+            color="red",
+            fill=False,
+            linestyle="--",
+            linewidth=2,
+            label=f"Distancia esperada (√n ≈ {distancia_esperada:,})",
+        )
+        plt.gca().add_patch(circulo)
+
+        # 4. Marcar el origen con un punto destacado
+        plt.scatter(0, 0, color="red", marker="+", s=200, label="Origen (0,0)")
+
+        # Estética y ejes
+        plt.axhline(y=0, color="black", linewidth=1, alpha=0.5)
+        plt.axvline(x=0, color="black", linewidth=1, alpha=0.5)
+
+        plt.title(
+            f"Distribución Espacial tras {n_pasos:,} pasos en Caminata Aleatoria 2D",
+            fontsize=14,
+        )
         plt.xlabel("Posición X")
         plt.ylabel("Posición Y")
-
+        plt.legend(loc="upper right")
         plt.grid(True, alpha=0.3)
         plt.axis("equal")
+
         plt.tight_layout()
         plt.show()
 
     @staticmethod
-    def graficar_heatmap(posiciones_finales):
-        """
-        Crea un mapa de calor basado en la densidad de las posiciones finales.
-        """
-        # Extraer x e y de la lista de tuplas
+    def graficar_heatmap(posiciones_finales, n_pasos):
+        import numpy as np
+
+        # 1. Extraer coordenadas
         x = [p[0] for p in posiciones_finales]
         y = [p[1] for p in posiciones_finales]
 
-        plt.figure(figsize=(10, 8))
+        plt.figure(figsize=(11, 8))
 
-        # cmap="hot" o "viridis" son excelentes para densidad
-        # bins define la "resolución" de la cuadrícula
-        counts, xedges, yedges, im = plt.hist2d(x, y, bins=30, cmap="hot")
+        # 2. Aumentar BINS para mejor resolución
+        counts, xedges, yedges, im = plt.hist2d(
+            x,
+            y,
+            bins=60,  # Mayor resolución (cuadros más pequeños)
+            cmap="hot",  # 'inferno' o 'magma' 'hot'
+        )
 
-        # Añadir barra de color para referencia de frecuencia
+        # 3. Añadir barra de color
         plt.colorbar(im, label="Frecuencia de Ranas")
 
+        # 4. Superponer el círculo de la "Distancia Típica" (√n)
+        distancia_esperada = np.sqrt(n_pasos)
+        circulo = plt.Circle(
+            (0, 0),
+            distancia_esperada,
+            color="cyan",
+            fill=False,
+            linestyle="--",
+            linewidth=2,
+            label=f"Radio esperado (√n ≈ {distancia_esperada:,})",
+        )
+        plt.gca().add_patch(circulo)
+
+        # Ejes de origen centrados
         plt.axhline(y=0, color="white", linewidth=0.8, linestyle="--", alpha=0.5)
         plt.axvline(x=0, color="white", linewidth=0.8, linestyle="--", alpha=0.5)
 
-        plt.title("Mapa de Calor: Concentración de Posiciones Finales Rana Feliz 2D")
+        plt.title(
+            f"Mapa de Calor: Densidad de Probabilidad ({n_pasos:,} pasos)", fontsize=14
+        )
         plt.xlabel("Posición X")
         plt.ylabel("Posición Y")
-
+        plt.legend(
+            loc="upper right", facecolor="black", labelcolor="white"
+        )  # Leyenda visible sobre fondo oscuro
+        plt.axis("equal")
         plt.show()
 
     @staticmethod

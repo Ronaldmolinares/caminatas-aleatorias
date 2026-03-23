@@ -5,7 +5,7 @@ from scipy.stats import chi2, ksone  # type: ignore
 
 
 class PruebaUniformidad:
-    def prueba_chi_cuadrado(self, numeros_aleatorios, k=1000):
+    def prueba_chi_cuadrado(self, numeros_aleatorios, pasos_por_simulacion):
         n = len(numeros_aleatorios)
         if n == 0:
             print("No se pueden realizar pruebas con una lista vacía.")
@@ -13,6 +13,9 @@ class PruebaUniformidad:
 
         # 1. Dividir el rango [0, 1) en k intervalos iguales
         # 2. Contar cuántos números caen en cada intervalo
+        k = int(
+            pasos_por_simulacion**0.5
+        )  # Elegimos k como la raíz cuadrada del número de simulaciones
         frecuencias_observadas, _ = np.histogram(
             numeros_aleatorios, bins=k, range=(0, 1)
         )

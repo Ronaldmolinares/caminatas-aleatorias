@@ -89,14 +89,14 @@ def ejecutar_simulacion(
         f"Probabilidad de estar en el origen (0, 0, 0) en el paso {paso_objetivo}: {probabilidad_en_origen:.4f}"
     )
 
-    Utils.graficar_scatter_3D(posiciones_finales)
+    Utils.graficar_scatter_3D(posiciones_finales, pasos_por_simulacion)
     Utils.graficar_proyecciones_ortogonales(trayectoria_x, trayectoria_y, trayectoria_z)
 
 
 if __name__ == "__main__":
     numero_de_simulaciones = 100
     pasos_por_simulacion = 1000000
-    paso_objetivo_para_probabilidad = 4
+    paso_objetivo_para_probabilidad = 1000
 
     validacion_exitosa = False
 
@@ -124,7 +124,9 @@ if __name__ == "__main__":
         valida_varianza = aleatoriedad.prueba_varianza(numeros_prueba)
 
         print("\n:::::: Prueba de chi-cuadrado ::::::")
-        valida_uniformidad = uniformidad.prueba_chi_cuadrado(numeros_prueba)
+        valida_uniformidad = uniformidad.prueba_chi_cuadrado(
+            numeros_prueba, pasos_por_simulacion
+        )
 
         print("\n:::::: Prueba de Kolmogorov-Smirnov ::::::")
         valida_uniformidad_ks = uniformidad.prueba_kolmogorov_smirnov(numeros_prueba)
@@ -163,7 +165,7 @@ if __name__ == "__main__":
             if not valida_varianza:
                 print("  - La prueba de varianza FALLÓ")
             if not valida_uniformidad:
-                print("  - La prueba de uniformidad FALLÓ")
+                print("  - La prueba de chi-cuadrado FALLÓ")
             if not valida_uniformidad_ks:
                 print("  - La prueba de Kolmogorov-Smirnov FALLÓ")
             if not valida_poker:

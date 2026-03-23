@@ -109,7 +109,7 @@ def ejecutar_simulacion(
             )
 
     # Graficar el histograma de posiciones finales
-    Utils.graficar_histograma(posiciones_finales)
+    Utils.graficar_histograma(posiciones_finales, pasos_por_simulacion)
 
     # Calcular y mostrar la probabilidad de estar en el origen en el paso 𝓷
     probabilidad_origen = calcular_probabilidad(
@@ -147,9 +147,16 @@ def calcular_probabilidad(posiciones, paso_especifico):
 
 
 if __name__ == "__main__":
+    """
+    Parametros de la simulación:
+    - numero_de_simulaciones: Cantidad de caminatas aleatorias independientes a simular
+    - pasos_por_simulacion: Número de pasos a simular en cada caminata aleatoria
+    - paso_objetivo_para_probabilidad: Paso específico para calcular la probabilidad de estar
+    - semilla_base: Semilla inicial para generar números pseudoaleatorios. Se puede modificar para obtener diferentes secuencias de números y validar su calidad.
+    """
     numero_de_simulaciones = 100
     pasos_por_simulacion = 1000000
-    paso_objetivo_para_probabilidad = 4
+    paso_objetivo_para_probabilidad = 1000
 
     validacion_exitosa = False
 
@@ -177,7 +184,9 @@ if __name__ == "__main__":
         valida_varianza = aleatoriedad.prueba_varianza(numeros_prueba)
 
         print("\n:::::: Prueba de chi-cuadrado ::::::")
-        valida_uniformidad = uniformidad.prueba_chi_cuadrado(numeros_prueba)
+        valida_uniformidad = uniformidad.prueba_chi_cuadrado(
+            numeros_prueba, pasos_por_simulacion
+        )
 
         print("\n:::::: Prueba de Kolmogorov-Smirnov ::::::")
         valida_uniformidad_ks = uniformidad.prueba_kolmogorov_smirnov(numeros_prueba)
@@ -216,7 +225,7 @@ if __name__ == "__main__":
             if not valida_varianza:
                 print("  - La prueba de varianza FALLÓ")
             if not valida_uniformidad:
-                print("  - La prueba de uniformidad FALLÓ")
+                print("  - La prueba de chi-cuadrado FALLÓ")
             if not valida_uniformidad_ks:
                 print("  - La prueba de Kolmogorov-Smirnov FALLÓ")
             if not valida_poker:

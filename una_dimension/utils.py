@@ -55,32 +55,60 @@ class Utils:
         plt.show(block=False)
 
     @staticmethod
-    def graficar_histograma(posiciones_finales):
+    def graficar_histograma(posiciones_finales, numero_pasos):
         """
-        Generar un histograma de las posiciones finales de múltiples caminatas.
-
+        Generar un histograma de las posiciones finales de múltiples caminatas
+        con una curva de distribución normal superpuesta.
 
         Parameters
         ----------
         posiciones_finales : list of int
             Lista con las posiciones finales de cada caminata aleatoria.
+        numero_pasos : int
+            Número de pasos en cada caminata aleatoria.
 
         """
-
-        plt.figure(figsize=(8, 6))
+        plt.figure(figsize=(10, 6))
         bins = int(np.sqrt(len(posiciones_finales)))
 
+        # Histograma con densidad normalizada
         plt.hist(
             posiciones_finales,
             bins=bins,
-            color="blue",
+            color="steelblue",
             alpha=0.7,
             edgecolor="black",
-            rwidth=0.5,
+            rwidth=0.9,
+            density=True,
+            label="Posiciones finales",
         )
-        plt.title("Histograma de posiciones finales de la Rana Feliz en 1D")
-        plt.xlabel("Posición Final")
-        plt.ylabel("Frecuencia")
+
+        # Calcular media y desviación estándar
+        media = np.mean(posiciones_finales)
+        desv_estandar = np.std(posiciones_finales)
+
+        # Crear curva de distribución normal
+        x = np.linspace(min(posiciones_finales), max(posiciones_finales), 100)
+        distribucion_normal = (
+            1
+            / (desv_estandar * np.sqrt(2 * np.pi))
+            * np.exp(-0.5 * ((x - media) / desv_estandar) ** 2)
+        )
+
+        plt.plot(
+            x,
+            distribucion_normal,
+            "r-",
+            linewidth=2,
+            label=f"Normal(0, √{numero_pasos:,})",
+        )
+
+        plt.title(
+            f"Distribución posición final ({numero_pasos:,} pasos, {len(posiciones_finales)} réplicas)"
+        )
+        plt.xlabel("Posición final")
+        plt.ylabel("Densidad")
+        plt.legend(loc="upper right")
         plt.grid(True, alpha=0.2, axis="y")
         plt.tight_layout()
         plt.show()
