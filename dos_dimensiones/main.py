@@ -12,6 +12,31 @@ from validacion_numeros.uniformidad import PruebaUniformidad
 
 
 def caminata(semilla: int, pasos: int):
+    """
+    Realiza una caminata aleatoria en dos dimensiones.
+
+    En cada paso, la rana se mueve en una de cuatro direcciones con probabilidad
+    0.25 cada una, según el valor generado por el generador de números pseudoaleatorios:
+    - [0.00, 0.25): Movimiento a la izquierda (-1, 0)
+    - [0.25, 0.50): Movimiento a la derecha (+1, 0)
+    - [0.50, 0.75): Movimiento arriba (0, +1)
+    - [0.75, 1.00]: Movimiento abajo (0, -1)
+
+    Parameters
+    ----------
+    semilla : int
+        Semilla inicial para el generador de números pseudoaleatorios.
+        Determina la secuencia de movimientos de manera reproducible.
+    pasos : int
+        Número de pasos (movimientos) a simular en la caminata.
+
+    Returns
+    -------
+    tuple of (list, list)
+        Tupla con dos listas:
+        - trayectoria_x: Lista de posiciones en el eje X incluyendo la inicial
+        - trayectoria_y: Lista de posiciones en el eje Y incluyendo la inicial
+    """
     generador = GeneradorCongruenciaLineal(semilla)
 
     x_actual = 0
@@ -42,7 +67,11 @@ def ejecutar_simulacion(
     numero_simulaciones, semilla, pasos_por_simulacion, paso_objetivo
 ):
     """
-    Ejecuta múltiples caminatas aleatorias independientes y analiza los resultados.
+    Ejecuta múltiples caminatas aleatorias independientes en 2D y analiza los resultados.
+
+    Realiza varias simulaciones de caminatas aleatorias en dos dimensiones,
+    cada una con una semilla diferente, y genera visualizaciones de los resultados
+    incluyendo scatter plot y heatmap de frecuencias.
 
     Parameters
     ----------
@@ -59,6 +88,15 @@ def ejecutar_simulacion(
     Returns
     -------
     None
+        La función muestra gráficas y imprime resultados en consola.
+
+    Notes
+    -----
+    - Genera un scatter plot 2D con distribución espacial de posiciones finales
+    - Genera un mapa de calor (heatmap) con la densidad de frecuencias
+    - Calcula la probabilidad de retornar al origen en el paso específico
+    - Cada simulación utiliza semilla diferente para garantizar independencia
+    - Grafica la trayectoria de la última simulación completada
     """
     print("Iniciando simulaciones de caminata aleatoria en 2D...")
 
@@ -92,8 +130,25 @@ def ejecutar_simulacion(
 
 
 def calcular_probabilidad(posiciones, paso_objetivo):
-    """Verifica si en el paso específico la rana estaba en el origen (0, 0)"""
+    """
+    Calcula la probabilidad de estar en el origen en un paso específico de 2D.
 
+    Cuenta cuántas simulaciones terminaron en el origen (0, 0) en un paso específico
+    y calcula la probabilidad empírica.
+
+    Parameters
+    ----------
+    posiciones : list of tuple
+        Lista de tuplas (x, y) representando posiciones en un paso específico
+        de múltiples caminatas aleatorias.
+    paso_objetivo : int
+        Índice del paso a analizar para calcular la probabilidad.
+
+    Returns
+    -------
+    str
+        Mensaje formateado con la probabilidad calculada con 4 decimales.
+    """
     contador = sum(1 for coordenada in posiciones if coordenada == (0, 0))
 
     probabilidad = contador / len(posiciones)

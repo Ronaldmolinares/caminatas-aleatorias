@@ -12,6 +12,34 @@ from validacion_numeros.uniformidad import PruebaUniformidad
 
 
 def caminata(semilla: int, pasos: int):
+    """
+    Realiza una caminata aleatoria en tres dimensiones.
+
+    En cada paso, la rana se mueve en una de seis direcciones con probabilidad
+    1/6 cada una, según el valor generado por el generador de números pseudoaleatorios:
+    - [0.00, 1/6): Movimiento a la izquierda (-1, 0, 0)
+    - [1/6, 1/3): Movimiento a la derecha (+1, 0, 0)
+    - [1/3, 0.50): Movimiento arriba (0, +1, 0)
+    - [0.50, 2/3): Movimiento abajo (0, -1, 0)
+    - [2/3, 5/6): Movimiento adelante (0, 0, +1)
+    - [5/6, 1.00]: Movimiento atrás (0, 0, -1)
+
+    Parameters
+    ----------
+    semilla : int
+        Semilla inicial para el generador de números pseudoaleatorios.
+        Determina la secuencia de movimientos de manera reproducible.
+    pasos : int
+        Número de pasos (movimientos) a simular en la caminata.
+
+    Returns
+    -------
+    tuple of (list, list, list)
+        Tupla con tres listas:
+        - trayectoria_x: Lista de posiciones en el eje X incluyendo la inicial
+        - trayectoria_y: Lista de posiciones en el eje Y incluyendo la inicial
+        - trayectoria_z: Lista de posiciones en el eje Z incluyendo la inicial
+    """
     generador = GeneradorCongruenciaLineal(semilla)
 
     x_actual = 0
@@ -48,6 +76,37 @@ def caminata(semilla: int, pasos: int):
 def ejecutar_simulacion(
     numero_simulaciones, semilla, pasos_por_simulacion, paso_objetivo
 ):
+    """
+    Ejecuta múltiples caminatas aleatorias independientes en 3D y analiza los resultados.
+
+    Realiza varias simulaciones de caminatas aleatorias en tres dimensiones,
+    cada una con una semilla diferente, y genera visualizaciones de los resultados
+    incluyendo scatter plot 3D y proyecciones ortogonales.
+
+    Parameters
+    ----------
+    numero_simulaciones : int
+        Cantidad de caminatas aleatorias independientes a simular.
+    semilla : int
+        Semilla base para generar secuencias de números pseudoaleatorios.
+        Se incrementará en cada simulación para obtener secuencias diferentes.
+    pasos_por_simulacion : int
+        Número de pasos a simular en cada caminata aleatoria.
+    paso_objetivo : int
+        Paso para calcular la probabilidad de estar en el origen (0, 0, 0) en ese paso.
+
+    Returns
+    -------
+    None
+        La función muestra gráficas y imprime resultados en consola.
+
+    Notes
+    -----
+    - Genera un gráfico 3D con scatter plot de las posiciones finales
+    - Calcula la probabilidad de retornar al origen en el paso específico
+    - Muestra las tres proyecciones ortogonales (XY, XZ, YZ) de la última trayectoria
+    - Cada simulación utiliza semilla diferente para garantizar independencia
+    """
     print("Iniciando simulaciones de caminata aleatoria en 3D...")
     posiciones_finales = []
     posiciones_en_paso_objetivo = []  # Guardar paso especifico para calcular probabilidad
