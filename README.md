@@ -24,16 +24,10 @@ caminatas-aleatorias/
 │   └── utils.py
 ├── generador_numeros/          # Generador de números pseudoaleatorios
 │   └── congruencia_lineal.py
-├── validacion_numeros/         # Pruebas de validación
-│   ├── aleatoriedad.py         # Prueba de aleatoriedad
-│   ├── uniformidad.py          # Prueba de uniformidad
-│   └── no_correlacion_serial.py # Prueba de no correlación serial
-└── prueba_dos_dimensiones/     # Pruebas específicas para 2D
-    ├── main.py
-    ├── generador.py
-    ├── campo.py
-    ├── coordenada.py
-    └── rana.py
+└── validacion_numeros/         # Pruebas de validación
+    ├── aleatoriedad.py         # Prueba de aleatoriedad
+    ├── uniformidad.py          # Prueba de uniformidad
+    └── no_correlacion_serial.py # Prueba de no correlación serial
 ```
 
 ## Componentes Principales
