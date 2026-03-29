@@ -45,7 +45,7 @@ class Utils:
 
         """
         plt.figure(figsize=(7, 7))
-        plt.plot(x, y, "o-", color="orange", linewidth=1.5, markersize=4)
+        plt.plot(x, y, "o-", color="orange", linewidth=1, markersize=1)
         plt.axhline(y=0, color="black", linewidth=0.8)  # Línea horizontal en y=0
         plt.axvline(x=0, color="black", linewidth=0.8)  # Línea vertical en x=0
         plt.title("Grafica de movimientos de la Rana Feliz en 1D")
