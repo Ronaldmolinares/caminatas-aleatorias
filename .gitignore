@@ -2,3 +2,5 @@ __pycache__
 prueba_dos_dimensiones
 validacion_numeros
 generador_numeros
+
+git remote add generadores_numeros_pseudoaleatorios https://github.com/maria-sogamoso/Generadores-de-n-meros-pseudoaleatorios

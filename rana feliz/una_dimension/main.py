@@ -5,10 +5,19 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from utils import Utils
 
+# Agregar ruta para importar desde generadores_numeros_pseudoaleatorios
+generador_path = (
+    Path(__file__).parent.parent.parent / "generadores_numeros_pseudoaleatorios"
+)
+sys.path.insert(0, str(generador_path))
+
 from generador_numeros.congruencia_lineal import GeneradorCongruenciaLineal
-from validacion_numeros.aleatoriedad import RandomnessTest
-from validacion_numeros.no_correlacion_serial import PruebaNoCorrelacionSerial
-from validacion_numeros.uniformidad import PruebaUniformidad
+from validadores.prueba_chi_cuadrado import PruebaChiCuadrado
+from validadores.prueba_kolmogorov_smirnov import PruebaKolmogorovSmirnov
+from validadores.prueba_medias import PruebaMedias
+from validadores.prueba_poker import PruebaPoker
+from validadores.prueba_rachas import PruebaRachas
+from validadores.prueba_varianza import PruebaVarianza
 
 
 def caminata(semilla: int, pasos: int):
@@ -173,29 +182,32 @@ if __name__ == "__main__":
         numeros_prueba = gen_prueba.siguiente_Ri_Congruencia_Lineal(50000)
 
         # Validar propiedades
-        aleatoriedad = RandomnessTest()
-        uniformidad = PruebaUniformidad()
-        no_correlacion_serial = PruebaNoCorrelacionSerial()
+        prueba_medias = PruebaMedias()
+        prueba_varianza = PruebaVarianza()
+        prueba_chi_cuadrado = PruebaChiCuadrado()
+        prueba_ks = PruebaKolmogorovSmirnov()
+        prueba_poker = PruebaPoker()
+        prueba_rachas = PruebaRachas()
 
         print("\n:::::: Prueba de Medias ::::::")
-        valida_medias = aleatoriedad.prueba_medias(numeros_prueba)
+        valida_medias = prueba_medias.prueba_medias(numeros_prueba)
 
         print("\n:::::: Prueba de Varianza ::::::")
-        valida_varianza = aleatoriedad.prueba_varianza(numeros_prueba)
+        valida_varianza = prueba_varianza.prueba_varianza(numeros_prueba)
 
         print("\n:::::: Prueba de chi-cuadrado ::::::")
-        valida_uniformidad = uniformidad.prueba_chi_cuadrado(
+        valida_uniformidad = prueba_chi_cuadrado.prueba_chi_cuadrado(
             numeros_prueba, pasos_por_simulacion
         )
 
         print("\n:::::: Prueba de Kolmogorov-Smirnov ::::::")
-        valida_uniformidad_ks = uniformidad.prueba_kolmogorov_smirnov(numeros_prueba)
+        valida_uniformidad_ks = prueba_ks.prueba_kolmogorov_smirnov(numeros_prueba)
 
         print("\n:::::: Prueba de Poker ::::::")
-        valida_poker = no_correlacion_serial.prueba_poker(numeros_prueba)
+        valida_poker = prueba_poker.prueba_poker(numeros_prueba)
 
         print("\n:::::: Prueba de Rachas ::::::")
-        valida_rachas = no_correlacion_serial.prueba_rachas(numeros_prueba)
+        valida_rachas = prueba_rachas.prueba_rachas(numeros_prueba)
 
         print("\n" + "=" * 50)
         if (
